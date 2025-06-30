@@ -1,0 +1,76 @@
+@import './styles/index.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply text-gray-900 dark:text-gray-100;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-gray-900 dark:text-white;
+  }
+
+  p {
+    @apply text-gray-700 dark:text-gray-300;
+  }
+
+  input[type='text'],
+  input[type='number'],
+  input[type='date'],
+  input[type='month'],
+  input[type='email'],
+  input[type='password'],
+  select,
+  textarea {
+    @apply block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 
+           text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 
+           disabled:opacity-50 disabled:bg-gray-100 dark:disabled:bg-gray-800;
+  }
+  label {
+    @apply block text-sm font-medium text-gray-700 dark:text-gray-200;
+  }
+
+  table {
+    @apply divide-gray-200 dark:divide-gray-700;
+  }
+
+  th {
+    @apply text-gray-500 dark:text-gray-400;
+  }
+
+  td {
+    @apply text-gray-900 dark:text-gray-100;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+
+:root {
+  --bg-app: theme('colors.gray.50');
+  --bg-card: theme('colors.white');
+  --text-primary: theme('colors.gray.900');
+  --text-secondary: theme('colors.gray.600');
+}
+
+.dark {
+  --bg-app: theme('colors.gray.900');
+  --bg-card: theme('colors.gray.800');
+  --text-primary: theme('colors.white');
+  --text-secondary: theme('colors.gray.300');
+}

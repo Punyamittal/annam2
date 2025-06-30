@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appwrite Authentication Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.1"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Appwrite Authentication Test</h1>
+    <p>This page tests the Appwrite authentication functionality for GreenGuardian.</p>
+    
+    <div class="test-container">
+        <h2>1. Registration Test</h2>
+        <button id="test-registration">Run Test</button>
+        <div id="registration-result" class="result"></div>
+    </div>
+    
+    <div class="test-container">
+        <h2>2. Login Test</h2>
+        <button id="test-login">Run Test</button>
+        <div id="login-result" class="result"></div>
+    </div>
+    
+    <div class="test-container">
+        <h2>3. Get Current User Test</h2>
+        <button id="test-get-user">Run Test</button>
+        <div id="get-user-result" class="result"></div>
+    </div>
+    
+    <div class="test-container">
+        <h2>4. Logout Test</h2>
+        <button id="test-logout">Run Test</button>
+        <div id="logout-result" class="result"></div>
+    </div>
+    
+    <div class="test-container">
+        <h2>5. Run All Tests</h2>
+        <button id="run-all-tests">Run All Tests</button>
+    </div>
+    
+    <script>
+        // Initialize Appwrite
+        const { Client, Account, ID } = Appwrite;
+        
+        const client = new Client();
+        client
+            .setEndpoint('https://fra.cloud.appwrite.io/v1')
+            .setProject('685054a70005df878ce8');
+            
+        const account = new Account(client);
+        
+        // Test user credentials
+        const testEmail = `test${Math.floor(Math.random() * 10000)}@example.com`;
+        const testPassword = 'Password123!';
+        const testName = 'Test User';
+        
+        // Test registration
+        document.getElementById('test-registration').addEventListener('click', async () => {
+            const resultElement = document.getElementById('registration-result');
+            resultElement.className = 'result loading';
+            resultElement.textContent = 'Testing registration...';
+            
+            try {
+                const user = await account.create(
+                    ID.unique(),
+                    testEmail,
+                    testPassword,
+                    testName
+                );
+                
+                resultElement.className = 'result success';
+                resultElement.innerHTML = `
+                    <p>✅ Registration successful!</p>
+                    <p>Email: ${testEmail}</p>
+                    <pre>${JSON.stringify(user, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultElement.className = 'result error';
+                resultElement.innerHTML = `
+                    <p>❌ Registration failed: ${error.message}</p>
+                    <pre>${JSON.stringify(error, null, 2)}</pre>
+                `;
+            }
+        });
+        
+        // Test login
+        document.getElementById('test-login').addEventListener('click', async () => {
+            const resultElement = document.getElementById('login-result');
+            resultElement.className = 'result loading';
+            resultElement.textContent = 'Testing login...';
+            
+            try {
+                const session = await account.createEmailSession(testEmail, testPassword);
+                
+                resultElement.className = 'result success';
+                resultElement.innerHTML = `
+                    <p>✅ Login successful!</p>
+                    <pre>${JSON.stringify(session, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultElement.className = 'result error';
+                resultElement.innerHTML = `
+                    <p>❌ Login failed: ${error.message}</p>
+                    <pre>${JSON.stringify(error, null, 2)}</pre>
+                `;
+            }
+        });
+        
+        // Test get current user
+        document.getElementById('test-get-user').addEventListener('click', async () => {
+            const resultElement = document.getElementById('get-user-result');
+            resultElement.className = 'result loading';
+            resultElement.textContent = 'Getting current user...';
+            
+            try {
+                const user = await account.get();
+                
+                resultElement.className = 'result success';
+                resultElement.innerHTML = `
+                    <p>✅ Got current user successfully!</p>
+                    <pre>${JSON.stringify(user, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultElement.className = 'result error';
+                resultElement.innerHTML = `
+                    <p>❌ Failed to get current user: ${error.message}</p>
+                    <pre>${JSON.stringify(error, null, 2)}</pre>
+                `;
+            }
+        });
+        
+        // Test logout
+        document.getElementById('test-logout').addEventListener('click', async () => {
+            const resultElement = document.getElementById('logout-result');
+            resultElement.className = 'result loading';
+            resultElement.textContent = 'Testing logout...';
+            
+            try {
+                await account.deleteSession('current');
+                
+                resultElement.className = 'result success';
+                resultElement.innerHTML = `
+                    <p>✅ Logout successful!</p>
+                `;
+            } catch (error) {
+                resultElement.className = 'result error';
+                resultElement.innerHTML = `
+                    <p>❌ Logout failed: ${error.message}</p>
+                    <pre>${JSON.stringify(error, null, 2)}</pre>
+                `;
+            }
+        });
+        
+        // Run all tests
+        document.getElementById('run-all-tests').addEventListener('click', async () => {
+            // Reset all result elements
+            document.getElementById('registration-result').className = 'result';
+            document.getElementById('registration-result').textContent = '';
+            document.getElementById('login-result').className = 'result';
+            document.getElementById('login-result').textContent = '';
+            document.getElementById('get-user-result').className = 'result';
+            document.getElementById('get-user-result').textContent = '';
+            document.getElementById('logout-result').className = 'result';
+            document.getElementById('logout-result').textContent = '';
+            
+            // Trigger each test with a delay
+            document.getElementById('test-registration').click();
+            
+            setTimeout(() => {
+                document.getElementById('test-login').click();
+                
+                setTimeout(() => {
+                    document.getElementById('test-get-user').click();
+                    
+                    setTimeout(() => {
+                        document.getElementById('test-logout').click();
+                    }, 2000);
+                }, 2000);
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
