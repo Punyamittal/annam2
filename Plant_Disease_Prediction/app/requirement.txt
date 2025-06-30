@@ -1,0 +1,8 @@
+<<<<<<< HEAD
+numpy==1.26.3
+streamlit==1.30.0
+=======
+numpy==1.26.3
+streamlit==1.30.0
+>>>>>>> cf566f2e514b4772eb59d252f58938aa06822e5c
+tensorflow==2.16.0rc0
