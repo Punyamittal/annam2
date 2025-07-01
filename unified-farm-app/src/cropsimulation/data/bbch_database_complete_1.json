@@ -1,0 +1,1146 @@
+{
+  "general_scale": {
+    "principal_growth_stages": {
+      "0": "Germination / sprouting / bud development",
+      "1": "Leaf development (main shoot)",
+      "2": "Formation of side shoots / tillering",
+      "3": "Stem elongation or rosette growth / shoot development (main shoot)",
+      "4": "Development of harvestable vegetative plant parts or vegetatively propagated organs / booting (main shoot)",
+      "5": "Inflorescence emergence (main shoot) / heading",
+      "6": "Flowering (main shoot)",
+      "7": "Development of fruit",
+      "8": "Ripening or maturity of fruit and seed",
+      "9": "Senescence, beginning of dormancy"
+    }
+  },
+  "crops": {
+    "cereals": {
+      "crop_name": "cereals",
+      "scientific_names": [
+        "Triticum sp. L.",
+        "Hordeum vulgare L.",
+        "Avena sativa L.",
+        "Secale cereale L."
+      ],
+      "common_names": [
+        "wheat",
+        "barley",
+        "oat",
+        "rye"
+      ],
+      "growth_stages": {
+        "00": {
+          "code": "00",
+          "description": "Dry seed (caryopsis)",
+          "stage_type": "germination"
+        },
+        "01": {
+          "code": "01",
+          "description": "Beginning of seed imbibition",
+          "stage_type": "germination"
+        },
+        "03": {
+          "code": "03",
+          "description": "Seed imbibition complete",
+          "stage_type": "germination"
+        },
+        "05": {
+          "code": "05",
+          "description": "Radicle emerged from caryopsis",
+          "stage_type": "germination"
+        },
+        "06": {
+          "code": "06",
+          "description": "Radicle elongated, root hairs and/or side roots visible",
+          "stage_type": "germination"
+        },
+        "07": {
+          "code": "07",
+          "description": "Coleoptile emerged from caryopsis",
+          "stage_type": "germination"
+        },
+        "09": {
+          "code": "09",
+          "description": "Emergence: coleoptile penetrates soil surface (cracking stage)",
+          "stage_type": "germination"
+        },
+        "10": {
+          "code": "10",
+          "description": "First leaf through coleoptile",
+          "stage_type": "leaf_development"
+        },
+        "11": {
+          "code": "11",
+          "description": "First leaf unfolded",
+          "stage_type": "leaf_development"
+        },
+        "12": {
+          "code": "12",
+          "description": "2 leaves unfolded",
+          "stage_type": "leaf_development"
+        },
+        "13": {
+          "code": "13",
+          "description": "3 leaves unfolded",
+          "stage_type": "leaf_development"
+        },
+        "14": {
+          "code": "14",
+          "description": "4 leaves unfolded",
+          "stage_type": "leaf_development"
+        },
+        "15": {
+          "code": "15",
+          "description": "5 leaves unfolded",
+          "stage_type": "leaf_development"
+        },
+        "16": {
+          "code": "16",
+          "description": "6 leaves unfolded",
+          "stage_type": "leaf_development"
+        },
+        "17": {
+          "code": "17",
+          "description": "7 leaves unfolded",
+          "stage_type": "leaf_development"
+        },
+        "18": {
+          "code": "18",
+          "description": "8 leaves unfolded",
+          "stage_type": "leaf_development"
+        },
+        "19": {
+          "code": "19",
+          "description": "9 or more leaves unfolded",
+          "stage_type": "leaf_development"
+        },
+        "21": {
+          "code": "21",
+          "description": "Beginning of tillering: first tiller detectable",
+          "stage_type": "tillering"
+        },
+        "22": {
+          "code": "22",
+          "description": "2 tillers detectable",
+          "stage_type": "tillering"
+        },
+        "23": {
+          "code": "23",
+          "description": "3 tillers detectable",
+          "stage_type": "tillering"
+        },
+        "24": {
+          "code": "24",
+          "description": "4 tillers detectable",
+          "stage_type": "tillering"
+        },
+        "25": {
+          "code": "25",
+          "description": "5 tillers detectable",
+          "stage_type": "tillering"
+        },
+        "26": {
+          "code": "26",
+          "description": "6 tillers detectable",
+          "stage_type": "tillering"
+        },
+        "27": {
+          "code": "27",
+          "description": "7 tillers detectable",
+          "stage_type": "tillering"
+        },
+        "28": {
+          "code": "28",
+          "description": "8 tillers detectable",
+          "stage_type": "tillering"
+        },
+        "29": {
+          "code": "29",
+          "description": "End of tillering: maximum number of tillers detectable",
+          "stage_type": "tillering"
+        },
+        "30": {
+          "code": "30",
+          "description": "Beginning of stem elongation: pseudostem erect",
+          "stage_type": "stem_elongation"
+        },
+        "31": {
+          "code": "31",
+          "description": "1st node detectable",
+          "stage_type": "stem_elongation"
+        },
+        "32": {
+          "code": "32",
+          "description": "2nd node detectable",
+          "stage_type": "stem_elongation"
+        },
+        "33": {
+          "code": "33",
+          "description": "3rd node detectable",
+          "stage_type": "stem_elongation"
+        },
+        "34": {
+          "code": "34",
+          "description": "4th node detectable",
+          "stage_type": "stem_elongation"
+        },
+        "35": {
+          "code": "35",
+          "description": "5th node detectable",
+          "stage_type": "stem_elongation"
+        },
+        "36": {
+          "code": "36",
+          "description": "6th node detectable",
+          "stage_type": "stem_elongation"
+        },
+        "37": {
+          "code": "37",
+          "description": "Flag leaf just visible",
+          "stage_type": "stem_elongation"
+        },
+        "39": {
+          "code": "39",
+          "description": "Flag leaf ligule/collar just visible",
+          "stage_type": "stem_elongation"
+        },
+        "41": {
+          "code": "41",
+          "description": "Flag leaf sheath extending",
+          "stage_type": "booting"
+        },
+        "43": {
+          "code": "43",
+          "description": "Boot swollen",
+          "stage_type": "booting"
+        },
+        "45": {
+          "code": "45",
+          "description": "Boot swollen, ear/panicle just visible",
+          "stage_type": "booting"
+        },
+        "47": {
+          "code": "47",
+          "description": "Flag leaf sheath opening",
+          "stage_type": "booting"
+        },
+        "49": {
+          "code": "49",
+          "description": "First awns visible",
+          "stage_type": "booting"
+        },
+        "51": {
+          "code": "51",
+          "description": "Beginning of heading: tip of inflorescence emerged from sheath",
+          "stage_type": "heading"
+        },
+        "52": {
+          "code": "52",
+          "description": "1/4 of inflorescence emerged",
+          "stage_type": "heading"
+        },
+        "53": {
+          "code": "53",
+          "description": "1/2 of inflorescence emerged",
+          "stage_type": "heading"
+        },
+        "54": {
+          "code": "54",
+          "description": "3/4 of inflorescence emerged",
+          "stage_type": "heading"
+        },
+        "55": {
+          "code": "55",
+          "description": "Middle of heading: inflorescence mid-way out of sheath",
+          "stage_type": "heading"
+        },
+        "56": {
+          "code": "56",
+          "description": "3/4 of inflorescence emerged",
+          "stage_type": "heading"
+        },
+        "57": {
+          "code": "57",
+          "description": "End of heading: inflorescence fully emerged",
+          "stage_type": "heading"
+        },
+        "59": {
+          "code": "59",
+          "description": "End of heading: inflorescence fully emerged",
+          "stage_type": "heading"
+        },
+        "61": {
+          "code": "61",
+          "description": "Beginning of flowering: first anthers visible",
+          "stage_type": "flowering"
+        },
+        "65": {
+          "code": "65",
+          "description": "Full flowering: 50% of anthers mature",
+          "stage_type": "flowering"
+        },
+        "69": {
+          "code": "69",
+          "description": "End of flowering",
+          "stage_type": "flowering"
+        },
+        "71": {
+          "code": "71",
+          "description": "Watery ripe: first grains have reached half their final size",
+          "stage_type": "fruit_development"
+        },
+        "73": {
+          "code": "73",
+          "description": "Early milk",
+          "stage_type": "fruit_development"
+        },
+        "75": {
+          "code": "75",
+          "description": "Medium milk: grain content milky",
+          "stage_type": "fruit_development"
+        },
+        "77": {
+          "code": "77",
+          "description": "Late milk",
+          "stage_type": "fruit_development"
+        },
+        "83": {
+          "code": "83",
+          "description": "Early dough",
+          "stage_type": "ripening"
+        },
+        "85": {
+          "code": "85",
+          "description": "Soft dough: grain content soft",
+          "stage_type": "ripening"
+        },
+        "87": {
+          "code": "87",
+          "description": "Hard dough: grain content solid",
+          "stage_type": "ripening"
+        },
+        "89": {
+          "code": "89",
+          "description": "Fully ripe: grain hard, difficult to divide with thumbnail",
+          "stage_type": "ripening"
+        },
+        "92": {
+          "code": "92",
+          "description": "Over-ripe: grain very hard, cannot be dented by thumbnail",
+          "stage_type": "senescence"
+        },
+        "97": {
+          "code": "97",
+          "description": "Plant dead and dry",
+          "stage_type": "senescence"
+        },
+        "99": {
+          "code": "99",
+          "description": "Harvested product",
+          "stage_type": "senescence"
+        }
+      }
+    },
+    "rice": {
+      "crop_name": "rice",
+      "scientific_names": [
+        "Oryza sativa L."
+      ],
+      "common_names": [
+        "rice",
+        "paddy"
+      ],
+      "growth_stages": {
+        "00": {
+          "code": "00",
+          "description": "Dry seed",
+          "stage_type": "germination"
+        },
+        "01": {
+          "code": "01",
+          "description": "Beginning of seed imbibition",
+          "stage_type": "germination"
+        },
+        "03": {
+          "code": "03",
+          "description": "Seed imbibition complete",
+          "stage_type": "germination"
+        },
+        "05": {
+          "code": "05",
+          "description": "Radicle emerged from seed",
+          "stage_type": "germination"
+        },
+        "06": {
+          "code": "06",
+          "description": "Radicle elongated, root hairs and/or side roots visible",
+          "stage_type": "germination"
+        },
+        "07": {
+          "code": "07",
+          "description": "Coleoptile emerged from seed",
+          "stage_type": "germination"
+        },
+        "09": {
+          "code": "09",
+          "description": "Emergence: coleoptile penetrates soil surface",
+          "stage_type": "germination"
+        },
+        "10": {
+          "code": "10",
+          "description": "First leaf through coleoptile",
+          "stage_type": "leaf_development"
+        },
+        "11": {
+          "code": "11",
+          "description": "First leaf unfolded",
+          "stage_type": "leaf_development"
+        },
+        "12": {
+          "code": "12",
+          "description": "2 leaves unfolded",
+          "stage_type": "leaf_development"
+        },
+        "13": {
+          "code": "13",
+          "description": "3 leaves unfolded",
+          "stage_type": "leaf_development"
+        },
+        "14": {
+          "code": "14",
+          "description": "4 leaves unfolded",
+          "stage_type": "leaf_development"
+        },
+        "15": {
+          "code": "15",
+          "description": "5 leaves unfolded",
+          "stage_type": "leaf_development"
+        },
+        "16": {
+          "code": "16",
+          "description": "6 leaves unfolded",
+          "stage_type": "leaf_development"
+        },
+        "17": {
+          "code": "17",
+          "description": "7 leaves unfolded",
+          "stage_type": "leaf_development"
+        },
+        "18": {
+          "code": "18",
+          "description": "8 leaves unfolded",
+          "stage_type": "leaf_development"
+        },
+        "19": {
+          "code": "19",
+          "description": "9 or more leaves unfolded",
+          "stage_type": "leaf_development"
+        },
+        "21": {
+          "code": "21",
+          "description": "Beginning of tillering: first tiller detectable",
+          "stage_type": "tillering"
+        },
+        "22": {
+          "code": "22",
+          "description": "2 tillers detectable",
+          "stage_type": "tillering"
+        },
+        "23": {
+          "code": "23",
+          "description": "3 tillers detectable",
+          "stage_type": "tillering"
+        },
+        "24": {
+          "code": "24",
+          "description": "4 tillers detectable",
+          "stage_type": "tillering"
+        },
+        "25": {
+          "code": "25",
+          "description": "5 tillers detectable",
+          "stage_type": "tillering"
+        },
+        "26": {
+          "code": "26",
+          "description": "6 tillers detectable",
+          "stage_type": "tillering"
+        },
+        "27": {
+          "code": "27",
+          "description": "7 tillers detectable",
+          "stage_type": "tillering"
+        },
+        "28": {
+          "code": "28",
+          "description": "8 tillers detectable",
+          "stage_type": "tillering"
+        },
+        "29": {
+          "code": "29",
+          "description": "End of tillering: maximum number of tillers detectable",
+          "stage_type": "tillering"
+        },
+        "30": {
+          "code": "30",
+          "description": "Beginning of stem elongation: stem elongation",
+          "stage_type": "stem_elongation"
+        },
+        "32": {
+          "code": "32",
+          "description": "2nd node detectable",
+          "stage_type": "stem_elongation"
+        },
+        "34": {
+          "code": "34",
+          "description": "4th node detectable",
+          "stage_type": "stem_elongation"
+        },
+        "37": {
+          "code": "37",
+          "description": "Flag leaf just visible",
+          "stage_type": "stem_elongation"
+        },
+        "39": {
+          "code": "39",
+          "description": "Flag leaf ligule/collar just visible",
+          "stage_type": "stem_elongation"
+        },
+        "41": {
+          "code": "41",
+          "description": "Flag leaf sheath extending",
+          "stage_type": "booting"
+        },
+        "43": {
+          "code": "43",
+          "description": "Boot swollen",
+          "stage_type": "booting"
+        },
+        "45": {
+          "code": "45",
+          "description": "Boot just visibly swollen",
+          "stage_type": "booting"
+        },
+        "47": {
+          "code": "47",
+          "description": "Flag leaf sheath opening",
+          "stage_type": "booting"
+        },
+        "49": {
+          "code": "49",
+          "description": "First awns visible (only in varieties with awns)",
+          "stage_type": "booting"
+        },
+        "51": {
+          "code": "51",
+          "description": "Beginning of heading: tip of inflorescence emerged from sheath",
+          "stage_type": "heading"
+        },
+        "53": {
+          "code": "53",
+          "description": "1/2 of inflorescence emerged",
+          "stage_type": "heading"
+        },
+        "55": {
+          "code": "55",
+          "description": "3/4 of inflorescence emerged",
+          "stage_type": "heading"
+        },
+        "57": {
+          "code": "57",
+          "description": "End of heading: inflorescence fully emerged",
+          "stage_type": "heading"
+        },
+        "59": {
+          "code": "59",
+          "description": "End of heading: inflorescence fully emerged",
+          "stage_type": "heading"
+        },
+        "61": {
+          "code": "61",
+          "description": "Beginning of flowering: first anthers visible",
+          "stage_type": "flowering"
+        },
+        "65": {
+          "code": "65",
+          "description": "Full flowering: 50% of anthers mature",
+          "stage_type": "flowering"
+        },
+        "69": {
+          "code": "69",
+          "description": "End of flowering",
+          "stage_type": "flowering"
+        },
+        "71": {
+          "code": "71",
+          "description": "Watery ripe: first grains have reached half their final size",
+          "stage_type": "fruit_development"
+        },
+        "73": {
+          "code": "73",
+          "description": "Early milk",
+          "stage_type": "fruit_development"
+        },
+        "75": {
+          "code": "75",
+          "description": "Medium milk: grain content milky",
+          "stage_type": "fruit_development"
+        },
+        "77": {
+          "code": "77",
+          "description": "Late milk",
+          "stage_type": "fruit_development"
+        },
+        "83": {
+          "code": "83",
+          "description": "Early dough",
+          "stage_type": "ripening"
+        },
+        "85": {
+          "code": "85",
+          "description": "Soft dough: grain content soft",
+          "stage_type": "ripening"
+        },
+        "87": {
+          "code": "87",
+          "description": "Hard dough: grain content solid",
+          "stage_type": "ripening"
+        },
+        "89": {
+          "code": "89",
+          "description": "Fully ripe: grain hard, difficult to divide with thumbnail",
+          "stage_type": "ripening"
+        },
+        "92": {
+          "code": "92",
+          "description": "Over-ripe: grain very hard, cannot be dented by thumbnail",
+          "stage_type": "senescence"
+        },
+        "97": {
+          "code": "97",
+          "description": "Plant dead and dry",
+          "stage_type": "senescence"
+        },
+        "99": {
+          "code": "99",
+          "description": "Harvested product",
+          "stage_type": "senescence"
+        }
+      }
+    },
+    "maize": {
+        "crop_name": "maize",
+        "scientific_names": [
+          "Zea mays L."
+        ],
+        "common_names": [
+          "maize",
+          "corn"
+        ],
+        "growth_stages": {
+          "00": {
+            "code": "00",
+            "description": "Dry seed (caryopsis)",
+            "stage_type": "germination"
+          },
+          "01": {
+            "code": "01",
+            "description": "Beginning of seed imbibition",
+            "stage_type": "germination"
+          },
+          "03": {
+            "code": "03",
+            "description": "Seed imbibition complete",
+            "stage_type": "germination"
+          },
+          "05": {
+            "code": "05",
+            "description": "Radicle emerged from caryopsis",
+            "stage_type": "germination"
+          },
+          "06": {
+            "code": "06",
+            "description": "Radicle elongated, root hairs and/or side roots visible",
+            "stage_type": "germination"
+          },
+          "07": {
+            "code": "07",
+            "description": "Coleoptile emerged from caryopsis",
+            "stage_type": "germination"
+          },
+          "09": {
+            "code": "09",
+            "description": "Emergence: coleoptile penetrates soil surface (cracking stage)",
+            "stage_type": "germination"
+          },
+          "10": {
+            "code": "10",
+            "description": "First leaf through coleoptile",
+            "stage_type": "leaf_development"
+          },
+          "11": {
+            "code": "11",
+            "description": "First leaf unfolded",
+            "stage_type": "leaf_development"
+          },
+          "12": {
+            "code": "12",
+            "description": "2 leaves unfolded",
+            "stage_type": "leaf_development"
+          },
+          "13": {
+            "code": "13",
+            "description": "3 leaves unfolded",
+            "stage_type": "leaf_development"
+          },
+          "19": {
+            "code": "19",
+            "description": "9 or more leaves unfolded",
+            "stage_type": "leaf_development"
+          },
+          "30": {
+            "code": "30",
+            "description": "Beginning of stem elongation",
+            "stage_type": "stem_elongation"
+          },
+          "31": {
+            "code": "31",
+            "description": "First node detectable",
+            "stage_type": "stem_elongation"
+          },
+          "32": {
+            "code": "32",
+            "description": "2 nodes detectable",
+            "stage_type": "stem_elongation"
+          },
+          "33": {
+            "code": "33",
+            "description": "3 nodes detectable",
+            "stage_type": "stem_elongation"
+          },
+          "39": {
+            "code": "39",
+            "description": "9 or more nodes detectable",
+            "stage_type": "stem_elongation"
+          },
+          "51": {
+            "code": "51",
+            "description": "Beginning of tassel emergence: tassel detectable at top of stem",
+            "stage_type": "inflorescence_emergence"
+          },
+          "53": {
+            "code": "53",
+            "description": "Tip of tassel visible",
+            "stage_type": "inflorescence_emergence"
+          },
+          "55": {
+            "code": "55",
+            "description": "Middle of tassel emergence: middle of tassel begins to separate",
+            "stage_type": "inflorescence_emergence"
+          },
+          "59": {
+            "code": "59",
+            "description": "End of tassel emergence: tassel fully emerged and separated",
+            "stage_type": "inflorescence_emergence"
+          },
+          "61": {
+            "code": "61",
+            "description": "Male: stamens in middle of tassel visible; Female: tip of ear emerging from leaf sheath",
+            "stage_type": "flowering"
+          },
+          "63": {
+            "code": "63",
+            "description": "Male: beginning of pollen shedding; Female: tips of stigmata visible",
+            "stage_type": "flowering"
+          },
+          "65": {
+            "code": "65",
+            "description": "Male: upper and lower parts of tassel in flower; Female: stigmata fully emerged",
+            "stage_type": "flowering"
+          },
+          "67": {
+            "code": "67",
+            "description": "Male: flowering completed; Female: stigmata drying",
+            "stage_type": "flowering"
+          },
+          "69": {
+            "code": "69",
+            "description": "End of flowering: stigmata completely dry",
+            "stage_type": "flowering"
+          },
+          "71": {
+            "code": "71",
+            "description": "Beginning of grain development: kernels at blister stage, about 16% dry matter",
+            "stage_type": "fruit_development"
+          },
+          "73": {
+            "code": "73",
+            "description": "Early milk",
+            "stage_type": "fruit_development"
+          },
+          "75": {
+            "code": "75",
+            "description": "Kernels in middle of cob yellowish-white (variety-dependent), content milky, about 40% dry matter",
+            "stage_type": "fruit_development"
+          },
+          "79": {
+            "code": "79",
+            "description": "Nearly all kernels have reached final size",
+            "stage_type": "fruit_development"
+          },
+          "83": {
+            "code": "83",
+            "description": "Early dough: kernel content soft, about 45% dry matter",
+            "stage_type": "ripening"
+          },
+          "85": {
+            "code": "85",
+            "description": "Kernels stage: nearly all kernels yellow (variety dependent), about 55% dry matter",
+            "stage_type": "ripening"
+          },
+          "87": {
+            "code": "87",
+            "description": "Physiological maturity: black dot/layer visible at base of kernels, about 60% dry matter",
+            "stage_type": "ripening"
+          },
+          "89": {
+            "code": "89",
+            "description": "Fully ripe: kernels hard and shiny, about 65% dry matter",
+            "stage_type": "ripening"
+          },
+          "97": {
+            "code": "97",
+            "description": "Plant dead and collapsing",
+            "stage_type": "senescence"
+          },
+          "99": {
+            "code": "99",
+            "description": "Harvested product",
+            "stage_type": "senescence"
+          }
+        }
+    },
+    
+    "cotton": {
+        "crop_name": "cotton",
+        "scientific_names": [
+          "Gossypium hirsutum L."
+        ],
+        "common_names": [
+          "cotton"
+        ],
+        "growth_stages": {
+          "00": {
+            "code": "00",
+            "description": "Dry seed",
+            "stage_type": "germination"
+          },
+          "01": {
+            "code": "01",
+            "description": "Beginning of seed imbibition",
+            "stage_type": "germination"
+          },
+          "03": {
+            "code": "03",
+            "description": "Seed imbibition complete",
+            "stage_type": "germination"
+          },
+          "05": {
+            "code": "05",
+            "description": "Radicle emerged from seed",
+            "stage_type": "germination"
+          },
+          "06": {
+            "code": "06",
+            "description": "Elongation of radicle",
+            "stage_type": "germination"
+          },
+          "07": {
+            "code": "07",
+            "description": "Hypocotyl with cotyledons breaking through seed coat",
+            "stage_type": "germination"
+          },
+          "08": {
+            "code": "08",
+            "description": "Hypocotyl with cotyledons growing towards soil surface",
+            "stage_type": "germination"
+          },
+          "09": {
+            "code": "09",
+            "description": "Emergence: hypocotyl with cotyledons breaking through soil surface (\"crook stage\")",
+            "stage_type": "germination"
+          },
+          "10": {
+            "code": "10",
+            "description": "Cotyledons completely unfolded",
+            "stage_type": "leaf_development"
+          },
+          "11": {
+            "code": "11",
+            "description": "First true leaf unfolded",
+            "stage_type": "leaf_development"
+          },
+          "12": {
+            "code": "12",
+            "description": "2nd true leaf unfolded",
+            "stage_type": "leaf_development"
+          },
+          "13": {
+            "code": "13",
+            "description": "3rd true leaf unfolded",
+            "stage_type": "leaf_development"
+          },
+          "19": {
+            "code": "19",
+            "description": "9 or more true leaves unfolded; no side shoots visible",
+            "stage_type": "leaf_development"
+          },
+          "21": {
+            "code": "21",
+            "description": "First vegetative side shoot (2nd order) visible",
+            "stage_type": "side_shoot_formation"
+          },
+          "22": {
+            "code": "22",
+            "description": "2 vegetative side shoots (2nd order) visible",
+            "stage_type": "side_shoot_formation"
+          },
+          "23": {
+            "code": "23",
+            "description": "3 vegetative side shoots (2nd order) visible",
+            "stage_type": "side_shoot_formation"
+          },
+          "29": {
+            "code": "29",
+            "description": "9 or more vegetative side shoots (2nd order) visible",
+            "stage_type": "side_shoot_formation"
+          },
+          "31": {
+            "code": "31",
+            "description": "Beginning of crop cover: 10% of plants meet between rows",
+            "stage_type": "stem_elongation"
+          },
+          "32": {
+            "code": "32",
+            "description": "20% of plants meet between rows",
+            "stage_type": "stem_elongation"
+          },
+          "33": {
+            "code": "33",
+            "description": "30% of plants meet between rows",
+            "stage_type": "stem_elongation"
+          },
+          "34": {
+            "code": "34",
+            "description": "40% of plants meet between rows",
+            "stage_type": "stem_elongation"
+          },
+          "35": {
+            "code": "35",
+            "description": "50% of plants meet between rows",
+            "stage_type": "stem_elongation"
+          },
+          "36": {
+            "code": "36",
+            "description": "60% of plants meet between rows",
+            "stage_type": "stem_elongation"
+          },
+          "37": {
+            "code": "37",
+            "description": "70% of plants meet between rows",
+            "stage_type": "stem_elongation"
+          },
+          "38": {
+            "code": "38",
+            "description": "80% of plants meet between rows",
+            "stage_type": "stem_elongation"
+          },
+          "39": {
+            "code": "39",
+            "description": "Canopy closure: 90% of the plants meet between rows",
+            "stage_type": "stem_elongation"
+          },
+          "51": {
+            "code": "51",
+            "description": "First floral buds detectable (\"pin-head square\")",
+            "stage_type": "inflorescence_emergence"
+          },
+          "52": {
+            "code": "52",
+            "description": "First floral buds visible (\"match-head square\")",
+            "stage_type": "inflorescence_emergence"
+          },
+          "55": {
+            "code": "55",
+            "description": "Floral buds distinctly enlarged",
+            "stage_type": "inflorescence_emergence"
+          },
+          "59": {
+            "code": "59",
+            "description": "Petals visible: floral buds still closed",
+            "stage_type": "inflorescence_emergence"
+          },
+          "60": {
+            "code": "60",
+            "description": "First flowers opened (sporadically within the population)",
+            "stage_type": "flowering"
+          },
+          "61": {
+            "code": "61",
+            "description": "Beginning of flowering (\"Early bloom\"): 5–6 blooms / 25 ft of row (= 5–6 blooms / 7.5 meter of row)",
+            "stage_type": "flowering"
+          },
+          "65": {
+            "code": "65",
+            "description": "Full flowering (\"Mid bloom\"): 11 and more blooms / 25 ft of row = 11 and more blooms / 7.5 meter of row",
+            "stage_type": "flowering"
+          },
+          "67": {
+            "code": "67",
+            "description": "Flowering finishing: majority of flowers faded (\"Late bloom\")",
+            "stage_type": "flowering"
+          },
+          "69": {
+            "code": "69",
+            "description": "End of flowering",
+            "stage_type": "flowering"
+          },
+          "71": {
+            "code": "71",
+            "description": "About 10% of bolls have attained their final size",
+            "stage_type": "fruit_development"
+          },
+          "72": {
+            "code": "72",
+            "description": "About 20% of bolls have attained their final size",
+            "stage_type": "fruit_development"
+          },
+          "73": {
+            "code": "73",
+            "description": "About 30% of bolls have attained their final size",
+            "stage_type": "fruit_development"
+          },
+          "74": {
+            "code": "74",
+            "description": "About 40% of bolls have attained their final size",
+            "stage_type": "fruit_development"
+          },
+          "75": {
+            "code": "75",
+            "description": "About 50% of bolls have attained their final size",
+            "stage_type": "fruit_development"
+          },
+          "76": {
+            "code": "76",
+            "description": "About 60% of bolls have attained their final size",
+            "stage_type": "fruit_development"
+          },
+          "77": {
+            "code": "77",
+            "description": "About 70% of bolls have attained their final size",
+            "stage_type": "fruit_development"
+          },
+          "78": {
+            "code": "78",
+            "description": "About 80% of bolls have attained their final size",
+            "stage_type": "fruit_development"
+          },
+          "79": {
+            "code": "79",
+            "description": "About 90% of bolls have attained their final size",
+            "stage_type": "fruit_development"
+          },
+          "80": {
+            "code": "80",
+            "description": "First open bolls on the first fruiting branches",
+            "stage_type": "ripening"
+          },
+          "81": {
+            "code": "81",
+            "description": "Beginning of boll opening: about 10% of bolls open. Nodes Above White Flower (NAWF)",
+            "stage_type": "ripening"
+          },
+          "82": {
+            "code": "82",
+            "description": "About 20% of bolls open",
+            "stage_type": "ripening"
+          },
+          "83": {
+            "code": "83",
+            "description": "About 30% of bolls open. Nodes Above Cracked Boll (NACB)",
+            "stage_type": "ripening"
+          },
+          "84": {
+            "code": "84",
+            "description": "About 40% of bolls open",
+            "stage_type": "ripening"
+          },
+          "85": {
+            "code": "85",
+            "description": "About 50% of bolls open",
+            "stage_type": "ripening"
+          },
+          "86": {
+            "code": "86",
+            "description": "About 60% of bolls open",
+            "stage_type": "ripening"
+          },
+          "87": {
+            "code": "87",
+            "description": "About 70% of bolls open",
+            "stage_type": "ripening"
+          },
+          "88": {
+            "code": "88",
+            "description": "About 80% of bolls open",
+            "stage_type": "ripening"
+          },
+          "89": {
+            "code": "89",
+            "description": "About 90% of bolls open",
+            "stage_type": "ripening"
+          },
+          "91": {
+            "code": "91",
+            "description": "About 10% of leaves discoloured or fallen",
+            "stage_type": "senescence"
+          },
+          "92": {
+            "code": "92",
+            "description": "About 20% of leaves discoloured or fallen",
+            "stage_type": "senescence"
+          },
+          "93": {
+            "code": "93",
+            "description": "About 30% of leaves discoloured or fallen",
+            "stage_type": "senescence"
+          },
+          "94": {
+            "code": "94",
+            "description": "About 40% of leaves discoloured or fallen",
+            "stage_type": "senescence"
+          },
+          "95": {
+            "code": "95",
+            "description": "About 50% of leaves discoloured or fallen",
+            "stage_type": "senescence"
+          },
+          "96": {
+            "code": "96",
+            "description": "About 60% of leaves discoloured or fallen",
+            "stage_type": "senescence"
+          },
+          "97": {
+            "code": "97",
+            "description": "Above ground parts of plant dead; plant dormant",
+            "stage_type": "senescence"
+          },
+          "99": {
+            "code": "99",
+            "description": "Harvested product (bolls and seeds)",
+            "stage_type": "senescence"
+          }
+        }
+      }
+    }
+  }
