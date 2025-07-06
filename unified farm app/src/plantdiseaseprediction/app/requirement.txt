@@ -1,0 +1,3 @@
+numpy==1.26.3
+tensorflow==2.16.0rc0
+# streamlit==1.30.0 # Streamlit is not needed for the Next.js API route
