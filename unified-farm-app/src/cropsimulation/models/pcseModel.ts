@@ -45,11 +45,20 @@ export class PCSeModel {
   public state: ModelState;
   private cropType: string;
   private parameters: any;
+  public soil: SoilData;
 
-  constructor(cropType: string) {
+  constructor(cropType: string, soil?: SoilData) {
     this.cropType = cropType;
     this.parameters = this.getCropParameters(cropType);
     this.state = this.initializeState();
+    this.soil = soil || {
+      waterContent: 25,
+      nitrogenContent: 0.3, // percent
+      phosphorusContent: 0.1,
+      potassiumContent: 0.2,
+      pH: 6.5,
+      organicMatter: 2.0
+    };
   }
 
   private getCropParameters(cropType: string) {
@@ -149,13 +158,24 @@ export class PCSeModel {
     };
   }
 
-  public simulate(day: number, temperature: number, water: number, fertilizer: number, humidity: number, windSpeed: number): ModelState {
+  public simulate(
+    day: number,
+    temperature: number,
+    water: number,
+    fertilizer: number,
+    humidity: number,
+    windSpeed: number,
+    soilPh?: number,
+    soilNitrogen?: number
+  ): ModelState {
     this.state.day = day;
     this.state.temperature = temperature;
     this.state.water = water;
     this.state.fertilizer = fertilizer;
     this.state.humidity = humidity;
     this.state.windSpeed = windSpeed;
+    if (soilPh !== undefined) this.soil.pH = soilPh;
+    if (soilNitrogen !== undefined) this.soil.nitrogenContent = soilNitrogen;
 
     // Calculate development stage based on temperature sum
     this.calculateDevelopmentStage();
@@ -232,19 +252,21 @@ export class PCSeModel {
   }
 
   private calculateLeafAreaIndex(): void {
+    const soilPhEffect = this.getSoilPhEffect(this.soil.pH);
+    const soilNitrogenEffect = this.getSoilNitrogenEffect(this.soil.nitrogenContent);
     if (this.state.developmentStage < 0.1) {
       this.state.leafAreaIndex = 0.0;
     } else if (this.state.developmentStage < 1.0) {
       // Vegetative growth
-      const maxLAI = 6.0 * this.state.waterStress * this.state.nitrogenStress;
+      const maxLAI = 6.0 * this.state.waterStress * this.state.nitrogenStress * soilPhEffect * soilNitrogenEffect;
       this.state.leafAreaIndex = maxLAI * Math.sin(Math.PI * (this.state.developmentStage - 0.1) / 0.9);
     } else if (this.state.developmentStage < 1.5) {
       // Maintain LAI during early reproductive
-      const maxLAI = 6.0 * this.state.waterStress * this.state.nitrogenStress;
+      const maxLAI = 6.0 * this.state.waterStress * this.state.nitrogenStress * soilPhEffect * soilNitrogenEffect;
       this.state.leafAreaIndex = maxLAI;
     } else {
       // Senescence
-      const maxLAI = 6.0 * this.state.waterStress * this.state.nitrogenStress;
+      const maxLAI = 6.0 * this.state.waterStress * this.state.nitrogenStress * soilPhEffect * soilNitrogenEffect;
       const senescenceFactor = Math.max(0, 1 - (this.state.developmentStage - 1.5) / 0.5);
       this.state.leafAreaIndex = maxLAI * senescenceFactor;
     }
@@ -261,9 +283,13 @@ export class PCSeModel {
     
     // Temperature effect on photosynthesis
     const tempEffect = this.getTemperatureEffect(this.state.temperature);
+
+    // Soil effects
+    const soilPhEffect = this.getSoilPhEffect(this.soil.pH);
+    const soilNitrogenEffect = this.getSoilNitrogenEffect(this.soil.nitrogenContent);
     
     // Daily photosynthesis (simplified)
-    const dailyPhotosynthesis = 40 * lightInterception * tempEffect * this.state.waterStress * this.state.nitrogenStress;
+    const dailyPhotosynthesis = 40 * lightInterception * tempEffect * this.state.waterStress * this.state.nitrogenStress * soilPhEffect * soilNitrogenEffect;
     
     // Maintenance respiration
     const maintenanceResp = this.state.totalBiomass * 0.015 * Math.pow(this.parameters.Q10, (this.state.temperature - 25) / 10);
@@ -274,12 +300,14 @@ export class PCSeModel {
   }
 
   private calculateGrainYield(): void {
+    const soilPhEffect = this.getSoilPhEffect(this.soil.pH);
+    const soilNitrogenEffect = this.getSoilNitrogenEffect(this.soil.nitrogenContent);
     if (this.state.developmentStage < 1.0) {
       this.state.grainYield = 0.0;
     } else {
       // Harvest index increases during grain filling
       const harvestIndex = Math.min(0.5, (this.state.developmentStage - 1.0) * 0.5);
-      this.state.grainYield = this.state.totalBiomass * harvestIndex;
+      this.state.grainYield = this.state.totalBiomass * harvestIndex * soilPhEffect * soilNitrogenEffect;
     }
   }
 
@@ -370,6 +398,10 @@ export class PCSeModel {
     const finalBiomass = this.state.totalBiomass * 10; // Convert to tons/ha
     const harvestIndex = 0.45; // Typical harvest index
     let yieldVal = finalBiomass * harvestIndex * this.state.waterStress * this.state.nitrogenStress;
+    // Soil effects
+    const soilPhEffect = this.getSoilPhEffect(this.soil.pH);
+    const soilNitrogenEffect = this.getSoilNitrogenEffect(this.soil.nitrogenContent);
+    yieldVal *= soilPhEffect * soilNitrogenEffect;
     // Humidity effect (disease risk)
     if (this.state.humidity > 80) yieldVal *= 0.9;
     // Wind effect
@@ -405,8 +437,18 @@ export class PCSeModel {
 
   public getOptimalYieldPrediction(): number {
     const originalState = { ...this.state };
+    const originalSoil = { ...this.soil };
     this.state = this.initializeState();
     const optimal = PCSeModel.getOptimalParameters();
+    // Use optimal soil conditions
+    this.soil = {
+      waterContent: 30,
+      nitrogenContent: 0.3,
+      phosphorusContent: 0.1,
+      potassiumContent: 0.2,
+      pH: 6.5,
+      organicMatter: 2.0
+    };
     let day = 0;
     let mature = false;
     while (!mature && day < 200) {
@@ -416,6 +458,7 @@ export class PCSeModel {
     }
     const potentialYield = this.getYieldPrediction();
     this.state = originalState;
+    this.soil = originalSoil;
     return potentialYield;
   }
 
@@ -450,12 +493,32 @@ export class PCSeModel {
     let mature = false;
     console.log(`BBCH progression for ${crop} (temp=${parameters.temperature}, water=${parameters.water}, fert=${parameters.fertilizer}):`);
     while (!mature && day < 150) {
-      model.simulate(day, parameters.temperature, parameters.water, parameters.fertilizer, parameters.humidity, parameters.windSpeed);
+      model.simulate(day, parameters.temperature, parameters.water, parameters.fertilizer, parameters.humidity, parameters.windSpeed, undefined, undefined);
       const bbch = model.getBBCHStage();
       const devStage = model.state.developmentStage;
       console.log(`Day ${day}: BBCH ${bbch}, DevStage ${devStage.toFixed(2)}`);
       if (parseInt(bbch) >= 87 || devStage >= 2.0) mature = true;
       day++;
     }
+  }
+
+  // Soil pH effect: optimal at 6.5, penalty for deviation
+  private getSoilPhEffect(pH: number): number {
+    const optimalPh = 6.5;
+    const deviation = Math.abs(pH - optimalPh);
+    if (deviation <= 0.5) return 1.0;
+    if (deviation <= 1.0) return 0.9;
+    if (deviation <= 1.5) return 0.8;
+    if (deviation <= 2.0) return 0.6;
+    return 0.4; // severe penalty
+  }
+
+  // Soil nitrogen effect: optimal at 0.3%, penalty for deficiency
+  private getSoilNitrogenEffect(nitrogenContent: number): number {
+    const optimalNitrogen = 0.3; // percent
+    if (nitrogenContent >= optimalNitrogen) return 1.0;
+    if (nitrogenContent >= 0.2) return 0.8;
+    if (nitrogenContent >= 0.1) return 0.6;
+    return 0.4; // severe deficiency
   }
 }
