@@ -98,26 +98,32 @@ const ParameterSliders: React.FC<ParameterSlidersProps> = ({ parameters, onParam
     }
   ];
 
+  const autoKeys = ['humidity', 'windSpeed', 'soilPh', 'soilNitrogen'];
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 space-y-6">
       <h2 className="text-xl font-bold text-gray-800 mb-4">Environmental Parameters</h2>
       
       {sliderConfig.map(({ key, label, icon: Icon, min, max, unit, color, bgColor, weatherControlled }) => (
         <div key={key} className={`p-4 rounded-lg ${bgColor} transition-all duration-200 hover:shadow-md ${
-          useRealWeather && weatherControlled ? 'ring-2 ring-blue-300 bg-blue-50' : ''
+          autoKeys.includes(key) ? 'ring-2 ring-green-200 bg-green-50' : (useRealWeather && weatherControlled ? 'ring-2 ring-blue-300 bg-blue-50' : '')
         }`}>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-2">
               <Icon className="w-5 h-5 text-gray-600" />
               <span className="font-medium text-gray-700">{label}</span>
-              {useRealWeather && weatherControlled && (
+              {autoKeys.includes(key) && (
+                <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+                  Auto (from Weather/Soil API)
+                </span>
+              )}
+              {useRealWeather && weatherControlled && !autoKeys.includes(key) && (
                 <span className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">
                   Real Weather
                 </span>
               )}
             </div>
             <span className="text-lg font-bold text-gray-800">
-              {parameters[key]} {unit}
+              {key === 'windSpeed' ? Number(parameters[key]).toFixed(2) : parameters[key]} {unit}
             </span>
           </div>
           
@@ -128,9 +134,9 @@ const ParameterSliders: React.FC<ParameterSlidersProps> = ({ parameters, onParam
               max={max}
               value={parameters[key] ?? min}
               onChange={(e) => onParameterChange(key, parseInt(e.target.value))}
-              disabled={useRealWeather && weatherControlled}
+              disabled={autoKeys.includes(key) || (useRealWeather && weatherControlled)}
               className={`w-full h-3 rounded-lg appearance-none cursor-pointer slider ${
-                useRealWeather && weatherControlled ? 'opacity-50 cursor-not-allowed' : ''
+                (autoKeys.includes(key) || (useRealWeather && weatherControlled)) ? 'opacity-50 cursor-not-allowed' : ''
               }`}
               style={{
                 background: `linear-gradient(to right, 
@@ -154,10 +160,7 @@ const ParameterSliders: React.FC<ParameterSlidersProps> = ({ parameters, onParam
           <p>• Temperature affects growth rate and development speed</p>
           <p>• Fertilizer influences plant nutrition and yield potential</p>
           <p>• Water availability impacts stress levels and growth</p>
-          <p>• Humidity impacts disease risk and irrigation needs</p>
-          <p>• Wind speed affects pollination, evaporation, and fertilizer drift</p>
-          <p>• Soil pH impacts nutrient availability and root health</p>
-          <p>• Soil nitrogen is crucial for vegetative growth and yield</p>
+          <p>• Humidity, wind speed, soil pH, and soil nitrogen are set automatically from live weather and soil data</p>
         </div>
       </div>
     </div>

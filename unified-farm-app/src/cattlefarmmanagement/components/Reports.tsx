@@ -4,6 +4,8 @@ import { FileSpreadsheet, FileText, Calendar, ChevronDown, ChevronRight } from '
 import { DataService } from '../lib/dataService';
 import type { MilkRecord, MonthlyTotal } from '../types';
 import { Button } from './ui/Button';
+import SkeletonLoader from './ui/SkeletonLoader';
+import CattleNavbar from "./Navbar";
 
 const Reports = () => {
   const [activeMonth, setActiveMonth] = useState(format(new Date(), 'yyyy-MM'));
@@ -122,189 +124,193 @@ const Reports = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-2xl font-bold dark:text-white">Monthly Reports</h1>
-        
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative">
-            <input
-              type="month"
-              value={activeMonth}
-              onChange={(e) => setActiveMonth(e.target.value)}
-              className="pr-10"
-            />
-            <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+    <>
+      <CattleNavbar />
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <h1 className="text-2xl font-bold dark:text-white">Monthly Reports</h1>
+          
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="relative">
+              <input
+                type="month"
+                value={activeMonth}
+                onChange={(e) => setActiveMonth(e.target.value)}
+                className="pr-10"
+              />
+              <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Current Month Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-        <div className="p-4 sm:p-6 border-b dark:border-gray-700">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <h2 className="text-lg font-semibold dark:text-white">
-              Records for {format(new Date(activeMonth), 'MMMM yyyy')}
-            </h2>
-            
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant="secondary"
-                icon={FileSpreadsheet}
-                onClick={() => generateExcel(records, activeMonth)}
-                disabled={loading || records.length === 0}
-              >
-                Export Excel
-              </Button>
+        {/* Current Month Section */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+          <div className="p-4 sm:p-6 border-b dark:border-gray-700">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <h2 className="text-lg font-semibold dark:text-white">
+                Records for {format(new Date(activeMonth), 'MMMM yyyy')}
+              </h2>
               
-              <Button
-                variant="primary"
-                icon={FileText}
-                onClick={() => generatePDF(records, activeMonth)}
-                disabled={loading || records.length === 0}
-              >
-                Export PDF
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-800">
-                <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Morning (kg)</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Evening (kg)</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total (kg)</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-              {records.map((record) => (
-                  <tr key={record.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {format(new Date(record.date), 'dd MMM yyyy')}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{record.morning_milk}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{record.evening_milk}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{record.total_milk}</td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot className="bg-gray-50">
-                <tr>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Total</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {records.reduce((sum, record) => sum + record.morning_milk, 0).toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {records.reduce((sum, record) => sum + record.evening_milk, 0).toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {records.reduce((sum, record) => sum + record.total_milk, 0).toFixed(2)}
-                  </td>
-                  <td></td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        )}
-      </div>
-
-      {/* Archived Reports Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-        <div className="p-4 sm:p-6 border-b dark:border-gray-700">
-          <h2 className="text-lg font-semibold dark:text-white">Archived Reports</h2>
-        </div>
-
-        <div className="divide-y dark:divide-gray-700">
-          {archivedMonths.map((month) => (
-            <div key={month.month} className="p-4 sm:p-6">
-              <div className="flex items-center justify-between">
-                <button
-                  onClick={() => setExpandedMonth(expandedMonth === month.month ? null : month.month)}
-                  className="flex items-center text-left w-full"
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant="secondary"
+                  icon={FileSpreadsheet}
+                  onClick={() => generateExcel(records, activeMonth)}
+                  disabled={loading || records.length === 0}
                 >
-                  <span className="mr-2">
-                    {expandedMonth === month.month ? (
-                      <ChevronDown className="h-5 w-5" />
-                    ) : (
-                      <ChevronRight className="h-5 w-5" />
-                    )}
-                  </span>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-medium dark:text-white">{month.month}</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Total: {month.total_milk.toFixed(1)}L | Daily Average: {month.average_daily.toFixed(1)}L
-                    </p>
-                  </div>
-                </button>
-
-                <div className="flex gap-2">
-                  <Button
-                    variant="secondary"
-                    icon={FileSpreadsheet}
-                    onClick={() => generateExcel([], month.month)}
-                    size="sm"
-                  >
-                    Excel
-                  </Button>
-                  <Button
-                    variant="primary"
-                    icon={FileText}
-                    onClick={() => generatePDF([], month.month)}
-                    size="sm"
-                  >
-                    PDF
-                  </Button>
-                </div>
+                  Export Excel
+                </Button>
+                
+                <Button
+                  variant="primary"
+                  icon={FileText}
+                  onClick={() => generatePDF(records, activeMonth)}
+                  disabled={loading || records.length === 0}
+                >
+                  Export PDF
+                </Button>
               </div>
-
-              {expandedMonth === month.month && (
-                <div className="mt-4 pl-7">
-                  <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
-                      <dt className="text-sm text-gray-500 dark:text-gray-400">Morning Total</dt>
-                      <dd className="text-lg font-medium dark:text-white">{month.morning_total.toFixed(1)}L</dd>
-                    </div>
-                    <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
-                      <dt className="text-sm text-gray-500 dark:text-gray-400">Evening Total</dt>
-                      <dd className="text-lg font-medium dark:text-white">{month.evening_total.toFixed(1)}L</dd>
-                    </div>
-                    <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
-                      <dt className="text-sm text-gray-500 dark:text-gray-400">Highest Day</dt>
-                      <dd className="text-lg font-medium dark:text-white">{month.highest_day.toFixed(1)}L</dd>
-                    </div>
-                    <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
-                      <dt className="text-sm text-gray-500 dark:text-gray-400">Lowest Day</dt>
-                      <dd className="text-lg font-medium dark:text-white">{month.lowest_day.toFixed(1)}L</dd>
-                    </div>
-                    <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
-                      <span className="text-sm text-gray-500 dark:text-gray-400">Label</span>
-                      <p className="text-gray-600 dark:text-gray-300">Secondary text</p>
-                    </div>
-                    <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
-                      <a className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">Link</a>
-                    </div>
-                  </dl>
-                </div>
-              )}
             </div>
-          ))}
+          </div>
 
-          {archivedMonths.length === 0 && (
-            <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-              No archived reports available
+          {loading ? (
+            <div className="p-8">
+              <SkeletonLoader height="h-8" width="w-1/3" className="mb-4" />
+              <SkeletonLoader height="h-10" count={8} />
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-800">
+                  <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Morning (kg)</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Evening (kg)</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total (kg)</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {records.map((record) => (
+                    <tr key={record.id}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {format(new Date(record.date), 'dd MMM yyyy')}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{record.morning_milk}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{record.evening_milk}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{record.total_milk}</td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot className="bg-gray-50">
+                  <tr>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Total</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {records.reduce((sum, record) => sum + record.morning_milk, 0).toFixed(2)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {records.reduce((sum, record) => sum + record.evening_milk, 0).toFixed(2)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {records.reduce((sum, record) => sum + record.total_milk, 0).toFixed(2)}
+                    </td>
+                    <td></td>
+                  </tr>
+                </tfoot>
+              </table>
             </div>
           )}
         </div>
+
+        {/* Archived Reports Section */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+          <div className="p-4 sm:p-6 border-b dark:border-gray-700">
+            <h2 className="text-lg font-semibold dark:text-white">Archived Reports</h2>
+          </div>
+
+          <div className="divide-y dark:divide-gray-700">
+            {archivedMonths.map((month) => (
+              <div key={month.month} className="p-4 sm:p-6">
+                <div className="flex items-center justify-between">
+                  <button
+                    onClick={() => setExpandedMonth(expandedMonth === month.month ? null : month.month)}
+                    className="flex items-center text-left w-full"
+                  >
+                    <span className="mr-2">
+                      {expandedMonth === month.month ? (
+                        <ChevronDown className="h-5 w-5" />
+                      ) : (
+                        <ChevronRight className="h-5 w-5" />
+                      )}
+                    </span>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-medium dark:text-white">{month.month}</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Total: {month.total_milk.toFixed(1)}L | Daily Average: {month.average_daily.toFixed(1)}L
+                      </p>
+                    </div>
+                  </button>
+
+                  <div className="flex gap-2">
+                    <Button
+                      variant="secondary"
+                      icon={FileSpreadsheet}
+                      onClick={() => generateExcel([], month.month)}
+                      size="sm"
+                    >
+                      Excel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      icon={FileText}
+                      onClick={() => generatePDF([], month.month)}
+                      size="sm"
+                    >
+                      PDF
+                    </Button>
+                  </div>
+                </div>
+
+                {expandedMonth === month.month && (
+                  <div className="mt-4 pl-7">
+                    <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                        <dt className="text-sm text-gray-500 dark:text-gray-400">Morning Total</dt>
+                        <dd className="text-lg font-medium dark:text-white">{month.morning_total.toFixed(1)}L</dd>
+                      </div>
+                      <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                        <dt className="text-sm text-gray-500 dark:text-gray-400">Evening Total</dt>
+                        <dd className="text-lg font-medium dark:text-white">{month.evening_total.toFixed(1)}L</dd>
+                      </div>
+                      <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                        <dt className="text-sm text-gray-500 dark:text-gray-400">Highest Day</dt>
+                        <dd className="text-lg font-medium dark:text-white">{month.highest_day.toFixed(1)}L</dd>
+                      </div>
+                      <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                        <dt className="text-sm text-gray-500 dark:text-gray-400">Lowest Day</dt>
+                        <dd className="text-lg font-medium dark:text-white">{month.lowest_day.toFixed(1)}L</dd>
+                      </div>
+                      <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                        <span className="text-sm text-gray-500 dark:text-gray-400">Label</span>
+                        <p className="text-gray-600 dark:text-gray-300">Secondary text</p>
+                      </div>
+                      <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded">
+                        <a className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">Link</a>
+                      </div>
+                    </dl>
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {archivedMonths.length === 0 && (
+              <div className="p-8 text-center text-gray-500 dark:text-gray-400">
+                No archived reports available
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

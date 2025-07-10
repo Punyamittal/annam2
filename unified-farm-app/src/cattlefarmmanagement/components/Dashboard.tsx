@@ -7,6 +7,8 @@ import { DataService } from '../lib/dataService';
 // Add CowService import
 import { CowService } from '../lib/cowService';
 import type { MilkRecord, Cow, HealthRecord } from '../types';
+import SkeletonLoader from './ui/SkeletonLoader';
+import CattleNavbar from "./Navbar";
 
 const Dashboard = () => {
   const [todayStats, setTodayStats] = useState<MilkRecord | null>(null);
@@ -34,49 +36,50 @@ const Dashboard = () => {
         const currentDate = new Date();
         const currentMonth = format(currentDate, 'yyyy-MM');
         const dayOfMonth = parseInt(format(currentDate, 'dd'));
-        
-        // Check if we're in first 5 days of the month
+
+        // Prepare promises for parallel fetching
+        const recordsPromise = DataService.getMonthlyRecords(currentMonth);
+        const cowsPromise = CowService.getCows({ status: 'Active' });
+        let previousMonthPromise: Promise<MilkRecord[]> | null = null;
         if (dayOfMonth <= 5) {
           const previousMonth = format(subMonths(currentDate, 1), 'yyyy-MM');
-          const previousRecords = await DataService.getMonthlyRecords(previousMonth);
-          
-          if (previousRecords.length > 0) {
-            setPreviousMonthData({
-              month: previousMonth,
-              records: previousRecords
-            });
-            
-            // Archive previous month's data
-            await DataService.checkAndArchiveOldMonth();
-          }
+          previousMonthPromise = DataService.getMonthlyRecords(previousMonth);
         }
 
-        // Fetch current month records
-        const records = await DataService.getMonthlyRecords(currentMonth);
-        
+        // Await all in parallel
+        const [records, cows, previousRecords] = await Promise.all([
+          recordsPromise,
+          cowsPromise,
+          previousMonthPromise ?? Promise.resolve([])
+        ]);
+
+        // Archive previous month's data if needed
+        if (previousMonthPromise && previousRecords.length > 0) {
+          setPreviousMonthData({
+            month: format(subMonths(currentDate, 1), 'yyyy-MM'),
+            records: previousRecords
+          });
+          await DataService.checkAndArchiveOldMonth();
+        }
+
         // Sort records by date
         const sortedRecords = records.sort((a, b) => 
           new Date(b.date).getTime() - new Date(a.date).getTime()
         );
-        
         setMonthlyRecords(sortedRecords);
-        
+
         const todayDate = format(new Date(), 'yyyy-MM-dd');
         const yesterdayDate = format(subDays(new Date(), 1), 'yyyy-MM-dd');
-        
-        // Find today's and yesterday's records
         const todayRecord = sortedRecords.find(record => record.date === todayDate);
         const yesterdayRecord = sortedRecords.find(record => record.date === yesterdayDate);
-        
         setTodayStats(todayRecord || null);
         setYesterdayStats(yesterdayRecord || null);
-        
+
         // Calculate monthly total with null check
         if (sortedRecords.length > 0) {
           const total = sortedRecords.reduce((sum, record) => sum + record.total_milk, 0);
           setMonthlyTotal(total);
           setMonthlyRecordCount(sortedRecords.length);
-
           // Get last 7 days data
           const last7Days = sortedRecords
             .slice(0, 7)
@@ -85,7 +88,6 @@ const Dashboard = () => {
               total: record.total_milk
             }))
             .reverse();
-          
           setWeeklyData(last7Days);
         } else {
           setMonthlyTotal(0);
@@ -93,14 +95,12 @@ const Dashboard = () => {
           setWeeklyData([]);
         }
 
-        // Add cow statistics fetch
-        const cows = await CowService.getCows({ status: 'Active' });
+        // Cow stats
         const stats = calculateCowStats(cows);
         setCowStats(stats);
 
       } catch (error) {
         console.error('Error fetching data:', error);
-        // Reset states on error
         setMonthlyRecords([]);
         setMonthlyTotal(0);
         setMonthlyRecordCount(0);
@@ -183,168 +183,176 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="space-y-6">
+        <SkeletonLoader height="h-8" width="w-1/3" className="mb-4" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <SkeletonLoader height="h-32" count={3} />
+        </div>
+        <SkeletonLoader height="h-12" width="w-full" className="my-4" />
+        <SkeletonLoader height="h-64" width="w-full" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold dark:text-white">Dashboard</h1>
+    <>
+      <CattleNavbar />
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold dark:text-white">Dashboard</h1>
 
-      {/* Alerts Section */}
-      <div className="grid grid-cols-1 gap-6 mb-6">
-        <AlertsSection />
-      </div>
+        {/* Alerts Section */}
+        <div className="grid grid-cols-1 gap-6 mb-6">
+          <AlertsSection />
+        </div>
 
-      {/* Add Herd Statistics section before existing grid */}
-      <div className="grid grid-cols-1 md:grid-cols-1 gap-6 w-full">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg transition-colors duration-200">
-          <h2 className="text-lg font-semibold mb-4 dark:text-white">Herd Statistics</h2>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                {cowStats.total}
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Animals</p>
-            </div>
-            <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-              <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                {cowStats.adults}
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Adult Cows</p>
-            </div>
-            <div className="text-center p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-              <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
-                {cowStats.calves}
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Calves</p>
+        {/* Add Herd Statistics section before existing grid */}
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-6 w-full">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg transition-colors duration-200">
+            <h2 className="text-lg font-semibold mb-4 dark:text-white">Herd Statistics</h2>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                  {cowStats.total}
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Animals</p>
+              </div>
+              <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                  {cowStats.adults}
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Adult Cows</p>
+              </div>
+              <div className="text-center p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
+                  {cowStats.calves}
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Calves</p>
+              </div>
             </div>
           </div>
+          
+          {/* Your existing Today's Stats Card */}
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg transition-colors duration-200">
+            <h2 className="text-lg font-semibold mb-4 dark:text-white">Today's Production</h2>
+            {todayStats ? (
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 dark:text-gray-400">Total</span>
+                  <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                    {todayStats.total_milk}L
+                  </span>
+                </div>
+                {trend && (
+                  <div className="flex items-center text-sm">
+                    <trend.icon className={`h-4 w-4 mr-1 ${trend.color}`} />
+                    <span className={trend.color}>{trend.text} from yesterday</span>
+                  </div>
+                )}
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div className="text-center p-2 bg-gray-50 dark:bg-gray-700 rounded">
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Morning</div>
+                    <div className="font-semibold dark:text-white">{todayStats.morning_milk}L</div>
+                  </div>
+                  <div className="text-center p-2 bg-gray-50 dark:bg-gray-700 rounded">
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Evening</div>
+                    <div className="font-semibold dark:text-white">{todayStats.evening_milk}L</div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center">
+                <p className="text-gray-600 dark:text-gray-400 mb-4">No data recorded for today</p>
+                <Link
+                  href="/cattlefarmmanagement/data-entry"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Today's Record
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
-        
-        {/* Your existing Today's Stats Card */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg transition-colors duration-200">
-          <h2 className="text-lg font-semibold mb-4 dark:text-white">Today's Production</h2>
-          {todayStats ? (
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400">Total</span>
-                <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                  {todayStats.total_milk}L
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Monthly Overview Card */}
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg transition-colors duration-200">
+            <h2 className="text-lg font-semibold mb-4 dark:text-white">Monthly Overview</h2>
+            <div className="space-y-4">
+              <div className="text-center">
+                <span className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                  {monthlyTotal.toFixed(1)}L
                 </span>
-              </div>
-              {trend && (
-                <div className="flex items-center text-sm">
-                  <trend.icon className={`h-4 w-4 mr-1 ${trend.color}`} />
-                  <span className={trend.color}>{trend.text} from yesterday</span>
-                </div>
-              )}
-              <div className="grid grid-cols-2 gap-4 mt-4">
-                <div className="text-center p-2 bg-gray-50 dark:bg-gray-700 rounded">
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Morning</div>
-                  <div className="font-semibold dark:text-white">{todayStats.morning_milk}L</div>
-                </div>
-                <div className="text-center p-2 bg-gray-50 dark:bg-gray-700 rounded">
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Evening</div>
-                  <div className="font-semibold dark:text-white">{todayStats.evening_milk}L</div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="text-center">
-              <p className="text-gray-600 dark:text-gray-400 mb-4">No data recorded for today</p>
-              <Link
-                href="/cattlefarmmanagement/data-entry"
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Today's Record
-              </Link>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Monthly Overview Card */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg transition-colors duration-200">
-          <h2 className="text-lg font-semibold mb-4 dark:text-white">Monthly Overview</h2>
-          <div className="space-y-4">
-            <div className="text-center">
-              <span className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-                {monthlyTotal.toFixed(1)}L
-              </span>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Production</p>
-            </div>
-            <div className="text-center p-2 bg-gray-50 dark:bg-gray-700 rounded">
-              <div className="text-sm text-gray-600 dark:text-gray-400">Daily Average</div>
-              <div className="font-semibold dark:text-white">
-                {monthlyRecordCount > 0 ? (monthlyTotal / monthlyRecordCount).toFixed(1) : '0.0'}L
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center p-2 bg-gray-50 dark:bg-gray-700 rounded">
-                <div className="text-sm text-gray-600 dark:text-gray-400">Avg Morning</div>
-                <div className="font-semibold dark:text-white">
-                  {monthlyRecordCount > 0 
-                    ? (monthlyRecords.reduce((sum, r) => sum + r.morning_milk, 0) / monthlyRecordCount).toFixed(1) 
-                    : '0.0'}L
-                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Production</p>
               </div>
               <div className="text-center p-2 bg-gray-50 dark:bg-gray-700 rounded">
-                <div className="text-sm text-gray-600 dark:text-gray-400">Avg Evening</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Daily Average</div>
                 <div className="font-semibold dark:text-white">
-                  {monthlyRecordCount > 0 
-                    ? (monthlyRecords.reduce((sum, r) => sum + r.evening_milk, 0) / monthlyRecordCount).toFixed(1) 
-                    : '0.0'}L
+                  {monthlyRecordCount > 0 ? (monthlyTotal / monthlyRecordCount).toFixed(1) : '0.0'}L
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center p-2 bg-gray-50 dark:bg-gray-700 rounded">
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Avg Morning</div>
+                  <div className="font-semibold dark:text-white">
+                    {monthlyRecordCount > 0 
+                      ? (monthlyRecords.reduce((sum, r) => sum + r.morning_milk, 0) / monthlyRecordCount).toFixed(1) 
+                      : '0.0'}L
+                  </div>
+                </div>
+                <div className="text-center p-2 bg-gray-50 dark:bg-gray-700 rounded">
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Avg Evening</div>
+                  <div className="font-semibold dark:text-white">
+                    {monthlyRecordCount > 0 
+                      ? (monthlyRecords.reduce((sum, r) => sum + r.evening_milk, 0) / monthlyRecordCount).toFixed(1) 
+                      : '0.0'}L
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg transition-colors duration-200">
-          <h2 className="text-lg font-semibold mb-4 dark:text-white">Weekly Trend</h2>
-          <div className="space-y-2">
-            {weeklyData.map((day) => (
-              <div key={day.date} className="flex justify-between items-center py-2 border-b dark:border-gray-700 last:border-0">
-                <span className="text-gray-600 dark:text-gray-400">{day.date}</span>
-                <span className="font-semibold dark:text-white">{day.total}L</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Previous Month Export Section */}
-      {previousMonthData && (
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg transition-colors duration-200">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold dark:text-white">
-              Previous Month Records - {format(new Date(previousMonthData.month), 'MMMM yyyy')}
-            </h2>
-            <div className="flex space-x-3">
-              <button
-                onClick={() => handleExportExcel(previousMonthData.month, previousMonthData.records)}
-                className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600"
-              >
-                <FileSpreadsheet className="h-4 w-4 mr-2" />
-                Export Excel
-              </button>
-              <button
-                onClick={() => handleExportPDF(previousMonthData.month, previousMonthData.records)}
-                className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
-              >
-                <FileText className="h-4 w-4 mr-2" />
-                Export PDF
-              </button>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg transition-colors duration-200">
+            <h2 className="text-lg font-semibold mb-4 dark:text-white">Weekly Trend</h2>
+            <div className="space-y-2">
+              {weeklyData.map((day) => (
+                <div key={day.date} className="flex justify-between items-center py-2 border-b dark:border-gray-700 last:border-0">
+                  <span className="text-gray-600 dark:text-gray-400">{day.date}</span>
+                  <span className="font-semibold dark:text-white">{day.total}L</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-      )}
-    </div>
+
+        {/* Previous Month Export Section */}
+        {previousMonthData && (
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg transition-colors duration-200">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold dark:text-white">
+                Previous Month Records - {format(new Date(previousMonthData.month), 'MMMM yyyy')}
+              </h2>
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => handleExportExcel(previousMonthData.month, previousMonthData.records)}
+                  className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600"
+                >
+                  <FileSpreadsheet className="h-4 w-4 mr-2" />
+                  Export Excel
+                </button>
+                <button
+                  onClick={() => handleExportPDF(previousMonthData.month, previousMonthData.records)}
+                  className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+                >
+                  <FileText className="h-4 w-4 mr-2" />
+                  Export PDF
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

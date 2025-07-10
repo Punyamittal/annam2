@@ -6,6 +6,8 @@ import {
   Bar, Line, Pie, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell
 } from 'recharts';
 import { DataService } from '../lib/dataService';
+import SkeletonLoader from './ui/SkeletonLoader';
+import CattleNavbar from "./Navbar";
 
 const Analytics = () => {
   const [loading, setLoading] = useState(true);
@@ -85,8 +87,14 @@ const Analytics = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="space-y-6">
+        <SkeletonLoader height="h-8" width="w-1/3" className="mb-4" />
+        <SkeletonLoader height="h-80" width="w-full" className="mb-6" />
+        <SkeletonLoader height="h-80" width="w-full" className="mb-6" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <SkeletonLoader height="h-80" width="w-full" />
+          <SkeletonLoader height="h-80" width="w-full" />
+        </div>
       </div>
     );
   }
@@ -100,116 +108,119 @@ const Analytics = () => {
   }
 
   return (
-    <div className="space-y-6">
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold dark:text-white">Production Analytics</h1>
-        
-        <div className="relative">
-          <select
-            value={comparisonMonths}
-            onChange={(e) => handleTimeRangeChange(Number(e.target.value))}
-            className="appearance-none bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 
-                     text-gray-700 dark:text-gray-200 py-2 px-4 pr-8 rounded-lg shadow-sm 
-                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                     disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={loading}
-          >
-            {timeRangeOptions.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
-        </div>
-      </div>
-      </div>
-
-      {/* Monthly Comparison Chart */}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-        <h2 className="text-lg font-semibold mb-4 dark:text-white">Monthly Production Comparison</h2>
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={monthlyComparison}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="total_milk" name="Total Production" fill="#2563eb" />
-              <Bar dataKey="average_daily" name="Daily Average" fill="#059669" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Daily Production Trend */}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-        <h2 className="text-lg font-semibold mb-4 dark:text-white">Daily Production Trend</h2>
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={dailyData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="total" name="Total" stroke="#2563eb" />
-              <Line type="monotone" dataKey="morning" name="Morning" stroke="#059669" />
-              <Line type="monotone" dataKey="evening" name="Evening" stroke="#dc2626" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Production Distribution */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-4 dark:text-white">Time Distribution</h2>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={[
-                    { name: 'Morning', value: productionTrends.morning },
-                    { name: 'Evening', value: productionTrends.evening }
-                  ]}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  label
-                >
-                  <Cell fill="#059669" />
-                  <Cell fill="#dc2626" />
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+    <>
+      <CattleNavbar />
+      <div className="space-y-6">
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold dark:text-white">Production Analytics</h1>
+          
+          <div className="relative">
+            <select
+              value={comparisonMonths}
+              onChange={(e) => handleTimeRangeChange(Number(e.target.value))}
+              className="appearance-none bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 
+                       text-gray-700 dark:text-gray-200 py-2 px-4 pr-8 rounded-lg shadow-sm 
+                       focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                       disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={loading}
+            >
+              {timeRangeOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
           </div>
         </div>
+        </div>
 
-        {/* Weekly Pattern */}
+        {/* Monthly Comparison Chart */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-4 dark:text-white">Weekly Pattern</h2>
+          <h2 className="text-lg font-semibold mb-4 dark:text-white">Monthly Production Comparison</h2>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={weeklyPattern}>
+              <BarChart data={monthlyComparison}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="day" />
+                <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="average" name="Daily Average" fill="#2563eb" />
+                <Legend />
+                <Bar dataKey="total_milk" name="Total Production" fill="#2563eb" />
+                <Bar dataKey="average_daily" name="Daily Average" fill="#059669" />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
+
+        {/* Daily Production Trend */}
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+          <h2 className="text-lg font-semibold mb-4 dark:text-white">Daily Production Trend</h2>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={dailyData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="total" name="Total" stroke="#2563eb" />
+                <Line type="monotone" dataKey="morning" name="Morning" stroke="#059669" />
+                <Line type="monotone" dataKey="evening" name="Evening" stroke="#dc2626" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Production Distribution */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+            <h2 className="text-lg font-semibold mb-4 dark:text-white">Time Distribution</h2>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: 'Morning', value: productionTrends.morning },
+                      { name: 'Evening', value: productionTrends.evening }
+                    ]}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    label
+                  >
+                    <Cell fill="#059669" />
+                    <Cell fill="#dc2626" />
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Weekly Pattern */}
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+            <h2 className="text-lg font-semibold mb-4 dark:text-white">Weekly Pattern</h2>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={weeklyPattern}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="day" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="average" name="Daily Average" fill="#2563eb" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -26,6 +26,11 @@ interface StageDisplayProps {
     water: number;
     humidity: number;
     windSpeed: number;
+    soilPh: number;
+    soilNitrogen: number;
+    soilOrganicMatter: number;
+    soilTexture: string;
+    drainageClass: string;
   };
 }
 
@@ -126,7 +131,7 @@ const StageDisplay: React.FC<StageDisplayProps> = ({
 
           {/* Scientific Information */}
           {cropInfo && (
-            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 mb-4">
               <h4 className="font-semibold text-blue-800 mb-2">Crop Information</h4>
               <div className="text-sm text-blue-700 space-y-1">
                 <p><strong>Scientific Names:</strong> {cropInfo.scientific_names?.join(', ')}</p>
@@ -138,6 +143,59 @@ const StageDisplay: React.FC<StageDisplayProps> = ({
               </div>
             </div>
           )}
+
+          {/* Soil Effects */}
+          <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+            <h4 className="font-semibold text-green-800 mb-3">Soil Impact on Growth</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-green-700">pH Level</span>
+                  <span className="text-sm font-medium text-green-800">{parameters.soilPh.toFixed(1)}</span>
+                </div>
+                <div className="w-full bg-green-200 rounded-full h-2">
+                  <div 
+                    className="bg-green-600 h-2 rounded-full transition-all duration-300" 
+                    style={{ width: `${(parameters.soilPh / 14) * 100}%` }}
+                  ></div>
+                </div>
+                <p className="text-xs text-green-600">
+                  {parameters.soilPh < 6.5 ? 'Acidic - may limit nutrient uptake' : 
+                   parameters.soilPh > 7.5 ? 'Alkaline - good for most crops' : 
+                   'Optimal pH for nutrient availability'}
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-green-700">Nitrogen (mg/kg)</span>
+                  <span className="text-sm font-medium text-green-800">{parameters.soilNitrogen}</span>
+                </div>
+                <div className="w-full bg-green-200 rounded-full h-2">
+                  <div 
+                    className="bg-green-600 h-2 rounded-full transition-all duration-300" 
+                    style={{ width: `${Math.min((parameters.soilNitrogen / 100) * 100, 100)}%` }}
+                  ></div>
+                </div>
+                <p className="text-xs text-green-600">
+                  {parameters.soilNitrogen < 30 ? 'Low nitrogen - growth may be limited' : 
+                   parameters.soilNitrogen > 70 ? 'High nitrogen - excellent for growth' : 
+                   'Moderate nitrogen - adequate for growth'}
+                </p>
+              </div>
+            </div>
+            
+            <div className="mt-3 pt-3 border-t border-green-200">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-green-700">Soil Texture:</span>
+                <span className="font-medium text-green-800">{parameters.soilTexture}</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-green-700">Drainage:</span>
+                <span className="font-medium text-green-800">{parameters.drainageClass}</span>
+              </div>
+            </div>
+          </div>
         </div>
       ) : (
         <div className="p-6 text-center text-gray-500">

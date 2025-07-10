@@ -73,7 +73,7 @@ export const initializePCSEModel = (crop: string): PCSeModel => {
 };
 
 // FIXED: Get current stage using PCSE model simulation with proper day-BBCH alignment
-export const getCurrentStage = (crop: string, day: number, temperature: number = 25, water: number = 25, fertilizer: number = 150, humidity: number = 60, windSpeed: number = 2): { code: string; stage: BBCHStage; modelState: any } | null => {
+export const getCurrentStage = (crop: string, day: number, temperature: number = 25, water: number = 25, fertilizer: number = 150, humidity: number = 60, windSpeed: number = 2, soilPh: number = 7.0, soilNitrogen: number = 50): { code: string; stage: BBCHStage; modelState: any } | null => {
   try {
     const model = initializePCSEModel(crop);
     
@@ -83,8 +83,8 @@ export const getCurrentStage = (crop: string, day: number, temperature: number =
     const nutrientStress = fertilizer < 100 ? 0.8 : 1.0;
     const stressEffect = waterStress * tempStress * nutrientStress;
     
-    // Simulate with current parameters
-    const modelState = model.simulate(day, temperature, water, fertilizer, humidity, windSpeed);
+    // Simulate with current parameters including soil data
+    const modelState = model.simulate(day, temperature, water, fertilizer, humidity, windSpeed, soilPh, soilNitrogen);
     const bbchCode = model.getBBCHStage();
     
     const stages = getCropStages(crop);
@@ -183,9 +183,9 @@ export const getPreviousStages = (crop: string, currentStageCode: string, count:
 };
 
 // Get PCSE model predictions
-export const getPCSEPredictions = (crop: string, day: number, temperature: number, water: number, fertilizer: number, humidity: number = 60, windSpeed: number = 2) => {
+export const getPCSEPredictions = (crop: string, day: number, temperature: number, water: number, fertilizer: number, humidity: number = 60, windSpeed: number = 2, soilPh: number = 7.0, soilNitrogen: number = 50) => {
   const model = initializePCSEModel(crop);
-  const modelState = model.simulate(day, temperature, water, fertilizer, humidity, windSpeed);
+  const modelState = model.simulate(day, temperature, water, fertilizer, humidity, windSpeed, soilPh, soilNitrogen);
   return {
     yieldPrediction: model.getYieldPrediction(),
     stressIndicators: {

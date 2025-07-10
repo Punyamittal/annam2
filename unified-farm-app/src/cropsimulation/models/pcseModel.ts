@@ -507,18 +507,18 @@ export class PCSeModel {
     const optimalPh = 6.5;
     const deviation = Math.abs(pH - optimalPh);
     if (deviation <= 0.5) return 1.0;
-    if (deviation <= 1.0) return 0.9;
-    if (deviation <= 1.5) return 0.8;
-    if (deviation <= 2.0) return 0.6;
-    return 0.4; // severe penalty
+    if (deviation <= 1.0) return 0.85;
+    if (deviation <= 1.5) return 0.7;
+    if (deviation <= 2.0) return 0.5;
+    return 0.3; // severe penalty
   }
 
   // Soil nitrogen effect: optimal at 0.3%, penalty for deficiency
   private getSoilNitrogenEffect(nitrogenContent: number): number {
     const optimalNitrogen = 0.3; // percent
     if (nitrogenContent >= optimalNitrogen) return 1.0;
-    if (nitrogenContent >= 0.2) return 0.8;
-    if (nitrogenContent >= 0.1) return 0.6;
-    return 0.4; // severe deficiency
+    if (nitrogenContent >= 0.2) return 0.75;
+    if (nitrogenContent >= 0.1) return 0.5;
+    return 0.3; // severe deficiency
   }
 }
